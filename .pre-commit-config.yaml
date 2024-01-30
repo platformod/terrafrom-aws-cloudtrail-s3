@@ -42,3 +42,13 @@ repos:
       - id: terraform_fmt
       - id: terraform_docs
       - id: terraform_validate
+        args:
+          - --hook-config=--retry-once-with-cleanup=true
+      # - id: terraform_checkov
+      - id: terraform_providers_lock
+        args:
+          - --hook-config=--mode=only-check-is-current-lockfile-cross-platform
+          - --args=-platform=darwin_amd64
+          - --args=-platform=darwin_arm64
+          - --args=-platform=linux_arm64
+          - --args=-platform=linux_arm64

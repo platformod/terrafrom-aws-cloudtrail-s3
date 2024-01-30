@@ -74,6 +74,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install checkov
+        run: pip install checkov
+
       - name: Terraform min/max versions
         id: minMax
         uses: clowdhaus/terraform-min-max@v1.2.7

@@ -4,15 +4,16 @@ module "bucket" {
   version = "4.1.0"
 
   bucket = local.bucket_name
-  acl    = "private"
 
   control_object_ownership = true
   object_ownership         = "BucketOwnerPreferred"
 
+  acl                 = "private"
   block_public_acls   = true
   block_public_policy = true
 
   policy                                = data.aws_iam_policy_document.bucket.json
+  attach_policy                         = true
   attach_deny_insecure_transport_policy = true
 
   server_side_encryption_configuration = {
@@ -46,12 +47,14 @@ module "bucket" {
   ]
 
   tags = {
-    purpose = "cloudtrail"
+    Purpose = "cloudtrail"
+    Name    = local.bucket_name
   }
 
 }
 
 # https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-set-bucket-policy-for-multiple-accounts.html
 data "aws_iam_policy_document" "bucket" {
   statement {
     sid = "AWSCloudTrailAclCheck"
@@ -72,7 +75,7 @@ data "aws_iam_policy_document" "bucket" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = [for a, t in var.account_trails : t]
+      values   = [for o in var.account_trails : o.arn]
     }
   }
 
@@ -88,18 +91,18 @@ data "aws_iam_policy_document" "bucket" {
       "s3:PutObject",
     ]
 
-    resources = [for a, t in var.account_trails : "${local.bucket_arn}/AWSLogs/${a}"]
+    resources = [for o in var.account_trails : "${local.bucket_arn}/AWSLogs/${o.account}"]
 
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = [for a, t in var.account_trails : t]
+      values   = [for o in var.account_trails : o.arn]
     }
 
     condition {
       test     = "StringEquals"
       variable = "s3:x-amz-acl"
-      values   = "bucket-owner-full-control"
+      values   = ["bucket-owner-full-control"]
     }
 
   }
@@ -111,4 +114,3 @@ locals {
   bucket_name = "${var.name}-cloudtrail"
   bucket_arn  = "arn:${data.aws_partition.current.partition}:s3:::${local.bucket_name}"
 }
-

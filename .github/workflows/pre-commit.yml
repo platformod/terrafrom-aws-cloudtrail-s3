@@ -9,6 +9,8 @@ on:
 env:
   TERRAFORM_DOCS_VERSION: v0.16.0
 
+permissions: read-all
+
 jobs:
   collectInputs:
     name: Collect workflow inputs

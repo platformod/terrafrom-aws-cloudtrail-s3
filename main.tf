@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "bucket" {
       "s3:PutObject",
     ]
 
-    resources = [for o in var.account_trails : "${local.bucket_arn}/AWSLogs/${o.account}"]
+    resources = [for o in var.account_trails : "${local.bucket_arn}/AWSLogs/${o.account}/*"]
 
     condition {
       test     = "StringEquals"

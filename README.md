@@ -42,7 +42,7 @@ module "cloudtrail_s3" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.34.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.41.0 |
 
 ## Modules
 

@@ -1,7 +1,7 @@
 module "bucket" {
   #checkov:skip=CKV_TF_1:We want to use the registry, not git, for modules
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "4.1.1"
+  version = "4.1.2"
 
   bucket = local.bucket_name
 
